@@ -1,0 +1,16 @@
+{application, ct_auth,
+ [{description, "Cargotube Auhtentication and Authorization"},
+  {vsn, "semver"},
+  {registered, []},
+  {applications,
+   [kernel,
+    stdlib,
+    lager,
+    mnesia
+   ]},
+  {env,[]},
+  {modules, []},
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.
