@@ -22,6 +22,7 @@
          get_registrations/1,
 
          is_authenticated/1,
+         get_authid/1,
          get_authrole/1,
 
          lookup/1,
@@ -108,6 +109,9 @@ get_id(#cta_session{id = Id}) ->
 
 get_realm(#cta_session{realm = Realm}) ->
     Realm.
+
+get_authid(#cta_session{authid = Id}) ->
+    Id.
 
 get_authrole(#cta_session{authrole = Role}) ->
     Role.
