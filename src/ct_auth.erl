@@ -76,6 +76,8 @@ return_welcome_challenge_or_abort({ok, Session, anonymous, Realm}) ->
                                                     anonymous, Session),
     RoleResult = cta_realm:get_role(anonymous, Realm),
     maybe_authenticate_session(RoleResult, NewSession);
+return_welcome_challenge_or_abort({error, realm_closing}) ->
+    return_abort(close_realm);
 return_welcome_challenge_or_abort({error, no_such_realm}) ->
     return_abort(no_such_realm);
 return_welcome_challenge_or_abort({error, no_such_auth_method}) ->
