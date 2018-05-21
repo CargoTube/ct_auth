@@ -27,6 +27,8 @@
          get_authrole/1,
 
          lookup/1,
+         lookup_by_id/1,
+         lookup_by_realm/1,
 
          init/0
         ]).
@@ -37,6 +39,9 @@ init() ->
 
 lookup(SessionId) ->
     lookup_by_id(SessionId).
+
+lookup_by_realm(RealmName) ->
+    lookup_by_realm(RealmName).
 
 new(RealmName, Details, PeerAtGate)  ->
     Id = gen_global_id(),
