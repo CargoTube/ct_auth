@@ -6,7 +6,6 @@
         ]).
 
 -include("ct_auth.hrl").
--include_lib("ct_msg/include/ct_msg.hrl").
 
 handle_hello({hello, RealmName, Details}, Peer) ->
     Result = cta_realm:lookup(RealmName),

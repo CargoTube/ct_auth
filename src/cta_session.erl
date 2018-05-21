@@ -40,9 +40,6 @@ init() ->
 lookup(SessionId) ->
     lookup_by_id(SessionId).
 
-lookup_by_realm(RealmName) ->
-    lookup_by_realm(RealmName).
-
 new(RealmName, Details, PeerAtGate)  ->
     Id = gen_global_id(),
     Session = #cta_session{ id = Id,
