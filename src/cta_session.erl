@@ -4,6 +4,7 @@
 
 -export([new/3,
          close/1,
+         close_all_of_realm/1,
 
          set_auth_details/4,
          authenticate/2,
@@ -48,6 +49,15 @@ new(RealmName, Details, PeerAtGate)  ->
 
 close(#cta_session{id = SessionId}) ->
     delete_by_id(SessionId).
+
+close_all_of_realm(RealmName) ->
+    {ok, Sessions} = lookup_by_realm(RealmName),
+    Close = fun(Session, _) ->
+                    close(Session)
+                        end,
+    lists:foldl(Close, ok, Sessions),
+    ok.
+
 
 
 set_auth_details(AuthId, AuthMethod, AuthProvider, Session) ->
@@ -115,6 +125,20 @@ get_authid(#cta_session{authid = Id}) ->
 
 get_authrole(#cta_session{authrole = Role}) ->
     Role.
+
+
+lookup_by_realm(RealmName) ->
+    Lookup = fun() ->
+                     case mnesia:index_read(cta_session, RealmName, realm) of
+                         Sessions when is_list(Sessions) ->
+                             {ok, Sessions};
+                         Error ->
+                             {error, Error}
+                     end
+             end,
+    Result = mnesia:transaction(Lookup),
+    unify_result(Result).
+
 
 lookup_by_id(Id) ->
     Lookup = fun() ->

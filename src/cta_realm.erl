@@ -2,7 +2,9 @@
 
 -include("ct_auth.hrl").
 
--export([new/3,
+-export([
+         new/1,
+         new/3,
          close/1,
 
          get_name/1,
@@ -17,14 +19,29 @@
 init() ->
     create_table().
 
+new(Name) ->
+    new(Name, [anonymous], [{anonymous, <<"public">>}]).
+
+%% TODO: rethink authentication structure
 new(Name, AuthMethods, AuthMapping) when is_binary(Name) ->
     Realm = #cta_realm{name = Name,
                        authmethods = AuthMethods,
                        authmapping = AuthMapping
                       },
-    try_saving_realm(Realm, true).
+    Result = try_saving_realm(Realm, true),
+    maybe_add_system_session(Result).
+
+maybe_add_system_session({ok, #cta_realm{name = RealmName} = Realm}) ->
+    {ok, Sess} = cta_session:new(RealmName, #{}, system),
+    {ok, Sess1} = cta_session:set_auth_details(cargotube, system, system, Sess),
+    {ok, _} = cta_session:authenticate(cargotube, Sess1),
+    {ok, Realm};
+maybe_add_system_session(Error) ->
+    Error.
+
 
 close(RealmName) ->
+    cta_session:close_all_of_realm(RealmName),
     delete_by_name(RealmName).
 
 get_role(AuthId, #cta_realm{authmapping = Mapping}) ->

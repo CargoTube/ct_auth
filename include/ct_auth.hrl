@@ -1,7 +1,8 @@
 
 -record(cta_realm, {name = undefined,
                     authmethods = [],
-                    authmapping = []
+                    authmapping = [],
+                    is_closing = false
                    }).
 
 -record(cta_session, {
