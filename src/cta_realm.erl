@@ -10,6 +10,7 @@
          get_name/1,
          get_role/2,
          get_auth_methods/1,
+         is_closing/1,
 
          lookup/1,
          init/0
@@ -47,6 +48,9 @@ close(RealmName) ->
 get_role(AuthId, #cta_realm{authmapping = Mapping}) ->
     Result = lists:keyfind(AuthId, 1, Mapping),
     return_role(Result).
+
+is_closing(#cta_realm{is_closing = IsClosing}) ->
+    IsClosing.
 
 return_role({_, Role}) ->
     {ok, Role};

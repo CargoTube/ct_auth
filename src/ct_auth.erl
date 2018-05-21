@@ -5,6 +5,7 @@
          is_message_allowed/2
         ]).
 
+-include("ct_auth.hrl").
 -include_lib("ct_msg/include/ct_msg.hrl").
 
 handle_hello({hello, RealmName, Details}, Peer) ->
@@ -21,14 +22,17 @@ is_message_allowed(_Message, _Session) ->
     true.
 
 handle_realm({ok, Realm}, Details, Peer) ->
+    IsClosing = cta_realm:is_closing(Realm),
     AuthMethod = get_auth_method(Realm, Details),
-    maybe_create_session(AuthMethod, Realm, Details, Peer);
+    maybe_create_session(IsClosing, AuthMethod, Realm, Details, Peer);
 handle_realm(_Result, _Details, _Peer) ->
     {error, no_such_realm}.
 
-maybe_create_session(none, _Realm, _Details, _Peer) ->
+maybe_create_session(true, _Methods, _Realm, _Details, _Peer) ->
+    {error, realm_closing};
+maybe_create_session(false, none, _Realm, _Details, _Peer) ->
     {error, no_such_auth_method};
-maybe_create_session(AuthMethod, Realm, Details, Peer) ->
+maybe_create_session(false, AuthMethod, Realm, Details, Peer) ->
     RealmName = cta_realm:get_name(Realm),
     {ok, Session} = cta_session:new(RealmName, Details, Peer),
     {ok, Session, AuthMethod, Realm}.
