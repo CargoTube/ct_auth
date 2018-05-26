@@ -21,6 +21,7 @@
          get_realm/1,
          get_subscriptions/1,
          get_registrations/1,
+         to_map/1,
 
          is_authenticated/1,
          get_authid/1,
@@ -29,6 +30,7 @@
          lookup/1,
          lookup_by_id/1,
          lookup_by_realm/1,
+
 
          init/0
         ]).
@@ -39,6 +41,34 @@ init() ->
 
 lookup(SessionId) ->
     lookup_by_id(SessionId).
+
+to_map(#cta_session{
+          id = SessionId,
+          realm = Realm,
+          authid = AuthId,
+          authrole = AuthRole,
+          authprovider = AuthProvider,
+          authmethod = AuthMethod,
+          authenticated = Authenticated,
+          subscriptions = Subs,
+          registrations = Regs,
+          peer_at_gate = PeerAtGate
+         }) ->
+
+    Transport = unknown,
+    #{
+       session => SessionId,
+       realm => Realm,
+       authid => AuthId,
+       authrole => AuthRole,
+       authmethod => AuthMethod,
+       authprovider => AuthProvider,
+       transport => Transport,
+       authenticated => Authenticated,
+       subscriptions => Subs,
+       registrations => Regs,
+       peer_at_gate => PeerAtGate
+     }.
 
 new(RealmName, Details, PeerAtGate)  ->
     Id = gen_global_id(),
