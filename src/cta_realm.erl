@@ -6,11 +6,12 @@
          new/1,
          new/3,
          close/1,
+         close/2,
+         delete/1,
 
          get_name/1,
          get_role/2,
          get_auth_methods/1,
-         set_closing/1,
          is_closing/1,
 
          lookup/1,
@@ -32,7 +33,7 @@ new(Name, AuthMethods, AuthMapping) when is_binary(Name) ->
                       },
     try_saving_realm(Realm, true).
 
-close(RealmName) ->
+delete(RealmName) ->
     cta_session:close_all_of_realm(RealmName),
     delete_by_name(RealmName).
 
@@ -40,8 +41,11 @@ get_role(AuthId, #cta_realm{authmapping = Mapping}) ->
     Result = lists:keyfind(AuthId, 1, Mapping),
     return_role(Result).
 
-set_closing(#cta_realm{} = Realm) ->
-    UpdatedRealm = Realm#cta_realm{is_closing = true},
+close(Realm) ->
+    close(Realm, true).
+
+close(#cta_realm{} = Realm, Closing) ->
+    UpdatedRealm = Realm#cta_realm{is_closing = Closing},
     try_saving_realm(UpdatedRealm, false).
 
 is_closing(#cta_realm{is_closing = IsClosing}) ->
