@@ -10,6 +10,7 @@
          get_name/1,
          get_role/2,
          get_auth_methods/1,
+         set_closing/1,
          is_closing/1,
 
          lookup/1,
@@ -29,17 +30,7 @@ new(Name, AuthMethods, AuthMapping) when is_binary(Name) ->
                        authmethods = AuthMethods,
                        authmapping = AuthMapping
                       },
-    Result = try_saving_realm(Realm, true),
-    maybe_add_system_session(Result).
-
-maybe_add_system_session({ok, #cta_realm{name = RealmName} = Realm}) ->
-    {ok, Sess} = cta_session:new(RealmName, #{}, system),
-    {ok, Sess1} = cta_session:set_auth_details(cargotube, system, system, Sess),
-    {ok, _} = cta_session:authenticate(cargotube, Sess1),
-    {ok, Realm};
-maybe_add_system_session(Error) ->
-    Error.
-
+    try_saving_realm(Realm, true).
 
 close(RealmName) ->
     cta_session:close_all_of_realm(RealmName),
@@ -48,6 +39,10 @@ close(RealmName) ->
 get_role(AuthId, #cta_realm{authmapping = Mapping}) ->
     Result = lists:keyfind(AuthId, 1, Mapping),
     return_role(Result).
+
+set_closing(#cta_realm{} = Realm) ->
+    UpdatedRealm = Realm#cta_realm{is_closing = true},
+    try_saving_realm(UpdatedRealm, false).
 
 is_closing(#cta_realm{is_closing = IsClosing}) ->
     IsClosing.
