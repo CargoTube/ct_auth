@@ -3,6 +3,7 @@
 -include("ct_auth.hrl").
 
 -export([new/3,
+         system_session/1,
          close/1,
          close_all_of_realm/1,
 
@@ -78,6 +79,12 @@ new(RealmName, Details, PeerAtGate)  ->
                         peer_at_gate = PeerAtGate },
     try_saving_session(Session, true).
 
+system_session(RealmName) ->
+    #cta_session{ id = undefined,
+                  realm = RealmName,
+                  details = #{},
+                  peer_at_gate = undefined
+                }.
 
 close(#cta_session{id = SessionId}) ->
     delete_by_id(SessionId).
