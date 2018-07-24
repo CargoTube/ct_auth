@@ -1,15 +1,15 @@
 -module(ct_auth).
 
--export([handle_hello/2,
+-export([handle_hello/3,
          handle_authenticate/2,
          is_message_allowed/2
         ]).
 
 -include("ct_auth.hrl").
 
-handle_hello({hello, RealmName, Details}, Peer) ->
+handle_hello({hello, RealmName, Details}, Peer, Transport) ->
     Result = cta_realm:lookup(RealmName),
-    SessionResult = handle_realm(Result, Details, Peer),
+    SessionResult = handle_realm(Result, Details, Peer, Transport),
     return_welcome_challenge_or_abort(SessionResult).
 
 
@@ -20,20 +20,20 @@ is_message_allowed(_Message, _Session) ->
     %% TODO: implement
     true.
 
-handle_realm({ok, Realm}, Details, Peer) ->
+handle_realm({ok, Realm}, Details, Peer, Transp) ->
     IsClosing = cta_realm:is_closing(Realm),
     AuthMethod = get_auth_method(Realm, Details),
-    maybe_create_session(IsClosing, AuthMethod, Realm, Details, Peer);
-handle_realm(_Result, _Details, _Peer) ->
+    maybe_create_session(IsClosing, AuthMethod, Realm, Details, Peer, Transp);
+handle_realm(_Result, _Details, _Peer, _Transport) ->
     {error, no_such_realm}.
 
-maybe_create_session(true, _Methods, _Realm, _Details, _Peer) ->
+maybe_create_session(true, _Methods, _Realm, _Details, _Peer, _Transport) ->
     {error, realm_closing};
-maybe_create_session(false, none, _Realm, _Details, _Peer) ->
+maybe_create_session(false, none, _Realm, _Details, _Peer, _Transport) ->
     {error, no_such_auth_method};
-maybe_create_session(false, AuthMethod, Realm, Details, Peer) ->
+maybe_create_session(false, AuthMethod, Realm, Details, Peer, Transport) ->
     RealmName = cta_realm:get_name(Realm),
-    {ok, Session} = cta_session:new(RealmName, Details, Peer),
+    {ok, Session} = cta_session:new(RealmName, Details, Peer, Transport),
     {ok, Session, AuthMethod, Realm}.
 
 

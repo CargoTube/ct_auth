@@ -2,7 +2,7 @@
 
 -include("ct_auth.hrl").
 
--export([new/3,
+-export([new/4,
          close/1,
          close_all_of_realm/1,
 
@@ -69,9 +69,6 @@ to_map(#cta_session{
        registrations => Regs,
        peer_at_gate => PeerAtGate
      }.
-
-new(RealmName, Details, PeerAtGate)  ->
-    new(RealmName, Details, PeerAtGate, #{type => unknown}).
 
 new(RealmName, Details, PeerAtGate, Transport) when is_map(Transport) ->
     true = maps:is_key(type, Transport),
