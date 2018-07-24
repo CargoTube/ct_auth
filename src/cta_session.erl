@@ -52,10 +52,10 @@ to_map(#cta_session{
           authenticated = Authenticated,
           subscriptions = Subs,
           registrations = Regs,
-          peer_at_gate = PeerAtGate
+          peer_at_gate = PeerAtGate,
+          transport = Transport
          }) ->
 
-    Transport = unknown,
     #{
        session => SessionId,
        realm => Realm,
@@ -71,12 +71,19 @@ to_map(#cta_session{
      }.
 
 new(RealmName, Details, PeerAtGate)  ->
+    new(RealmName, Details, PeerAtGate, #{type => unknown}).
+
+new(RealmName, Details, PeerAtGate, Transport) when is_map(Transport) ->
+    true = maps:is_key(type, Transport),
     Id = gen_global_id(),
     Session = #cta_session{ id = Id,
                         realm = RealmName,
                         details = Details,
-                        peer_at_gate = PeerAtGate },
+                        peer_at_gate = PeerAtGate,
+                        transport = Transport
+                          },
     try_saving_session(Session, true).
+
 
 close(#cta_session{id = SessionId}) ->
     delete_by_id(SessionId).

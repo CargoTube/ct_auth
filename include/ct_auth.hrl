@@ -16,5 +16,6 @@
           authenticated = false,
           subscriptions = [],
           registrations = [],
+          transport = #{},
           peer_at_gate = undefined
          }).
