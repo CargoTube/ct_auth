@@ -9,6 +9,8 @@
           id = undefined,
           realm = undefined,
           details = #{},
+          disclose_caller = false,
+          disclose_publisher = false,
           authid = undefined,
           authrole = undefined,
           authprovider = undefined,

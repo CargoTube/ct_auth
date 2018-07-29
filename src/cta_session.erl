@@ -23,6 +23,9 @@
          get_registrations/1,
          to_map/1,
 
+         is_disclose_caller/1,
+         is_disclose_publisher/1,
+
          is_authenticated/1,
          get_authid/1,
          get_authrole/1,
@@ -53,6 +56,8 @@ to_map(#cta_session{
           subscriptions = Subs,
           registrations = Regs,
           peer_at_gate = PeerAtGate,
+          disclose_caller = DiscloseCaller,
+          disclose_publisher = DisclosePublisher,
           transport = Transport
          }) ->
 
@@ -67,6 +72,8 @@ to_map(#cta_session{
        authenticated => Authenticated,
        subscriptions => Subs,
        registrations => Regs,
+       disclose_caller => DiscloseCaller,
+       disclose_publisher => DisclosePublisher,
        peer_at_gate => PeerAtGate
      }.
 
@@ -160,6 +167,12 @@ get_authid(#cta_session{authid = Id}) ->
 
 get_authrole(#cta_session{authrole = Role}) ->
     Role.
+
+is_disclose_caller(#cta_session{disclose_caller = DiscloseCaller}) ->
+    DiscloseCaller.
+
+is_disclose_publisher(#cta_session{disclose_publisher = DisclosePublisher}) ->
+    DisclosePublisher.
 
 
 lookup_by_realm(RealmName) ->
