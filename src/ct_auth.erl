@@ -10,7 +10,7 @@
 -include("ct_auth.hrl").
 
 init() ->
-    ct_data_util:create_schema_if_needed(),
+    ct_data_util:create_mnesia_schema_if_needed(),
     cta_session:init(),
     cta_session:init(),
     ok.
