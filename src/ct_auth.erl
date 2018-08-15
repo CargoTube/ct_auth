@@ -2,10 +2,19 @@
 
 -export([handle_hello/3,
          handle_authenticate/2,
-         is_message_allowed/2
+         is_message_allowed/2,
+
+         init/0
         ]).
 
 -include("ct_auth.hrl").
+
+init() ->
+    ct_data_util:create_schema_if_needed(),
+    cta_session:init(),
+    cta_session:init(),
+    ok.
+
 
 handle_hello({hello, RealmName, Details}, Peer, Transport) ->
     Result = cta_realm:lookup(RealmName),

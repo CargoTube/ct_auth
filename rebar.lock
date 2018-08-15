@@ -1,5 +1,9 @@
 {"1.1.0",
-[{<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},1},
+[{<<"ct_data_util">>,
+  {git,"https://github.com/CargoTube/ct_data_util.git",
+       {ref,"ff942268a769d88097ef523d1284edd024f0fdac"}},
+  0},
+ {<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},1},
  {<<"lager">>,{pkg,<<"lager">>,<<"3.6.4">>},0}]}.
 [
 {pkg_hash,[
