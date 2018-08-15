@@ -12,7 +12,7 @@
 init() ->
     ct_data_util:create_mnesia_schema_if_needed(),
     cta_session:init(),
-    cta_session:init(),
+    cta_realm:init(),
     ok.
 
 
